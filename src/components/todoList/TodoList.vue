@@ -1,11 +1,22 @@
 <script setup>
+import { reactive, onMounted } from "vue";
+import DB from "@/services/DB";
 import TodoListAddForm from "./TodoListAddForm.vue";
 import TodoListFooter from "./TodoListFooter.vue";
 import Todo from "./Todo.vue";
+
+const todos = reactive([]);
+
+onMounted(async () => {
+  DB.setApiURL("https://691b336c2d8d78557571fc4d.mockapi.io/");
+  todos.splice(todos.length, 0, ...(await DB.findAll()));
+  console.table(todos);
+});
 </script>
 <template>
+  <!-- CARD LISTE -->
   <section
-    class="bg-white rounded-xl shadow ring-1 ring-gray-200/60 overflow-hidden"
+    class="bg-slate-100 rounded-xl shadow ring-1 ring-slate-200/60 overflow-hidden"
     aria-labelledby="todo-heading"
   >
     <h2 id="todo-heading" class="sr-only">Todo list</h2>
@@ -14,16 +25,9 @@ import Todo from "./Todo.vue";
     <TodoListAddForm />
 
     <!-- LISTE DES TODOS -->
-    <ul class="m-4 divide-y divide-gray-200" role="list" aria-label="Todos">
+    <ul class="m-4 divide-y text-gray-600" role="list" aria-label="Todos">
       <!-- ITEM (exemple) -->
-      <todo />
-      <!-- Message si aucun todo (à gérer en Vue) -->
-      <li
-        class="px-4 py-6 sm:px-5 text-gray-400 italic text-center hidden"
-        role="listitem"
-      >
-        No tasks yet.
-      </li>
+      <todo v-for="todo in todos" :key="todo.id" :todo="todo" />
     </ul>
 
     <!-- FOOTER DE LISTE -->
