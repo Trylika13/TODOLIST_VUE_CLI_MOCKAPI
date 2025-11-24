@@ -1,9 +1,24 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+const emits = defineEmits("onSubmitAddForm");
+
+const newContent = ref("");
+
+const onSubmitAddForm = () => {
+  emits("onSubmitAddForm", newContent.value);
+  newContent.value = "";
+};
+</script>
 <template>
   <div class="border-b border-gray-200 bg-gray-50 py-3 px-4 sm:p-5">
-    <form class="flex gap-2" aria-label="Add a new task">
+    <form
+      class="flex gap-2"
+      aria-label="Add a new task"
+      @submit.prevent="onSubmitAddForm()"
+    >
       <label for="new-todo" class="sr-only">New task</label>
       <input
+        v-model="newContent"
         id="new-todo"
         type="text"
         placeholder="What needs to be done?"
