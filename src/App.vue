@@ -7,7 +7,7 @@ import TodoList from "@/components/todoList/TodoList.vue";
 <template>
   <AppHeader />
   <main class="w-full max-w-xl mt-10 bg-white rounded-xl">
-    <TodoList />
+    <TodoList apiURL="https://691b336c2d8d78557571fc4d.mockapi.io/" />
   </main>
   <AppFooter />
 </template>
