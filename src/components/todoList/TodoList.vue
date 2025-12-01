@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from "vue";
+import { reactive, onMounted, computed } from "vue";
 import DB from "@/services/DB";
 import TodoListAddForm from "./TodoListAddForm.vue";
 import TodoListFooter from "./TodoListFooter.vue";
@@ -11,6 +11,9 @@ const props = defineProps({
 
 const todos = reactive([]);
 
+const notCompletedCount = computed(
+  () => todos.filter((todo) => !todo.completed).length
+);
 onMounted(async () => {
   DB.setApiURL(props.apiURL);
   todos.splice(todos.length, 0, ...(await DB.findAll()));
@@ -58,7 +61,7 @@ const deleteOneById = async (id) => {
     </ul>
 
     <!-- FOOTER DE LISTE -->
-    <TodoListFooter />
+    <TodoListFooter :notCompletedCount="notCompletedCount" />
   </section>
 </template>
 <style scoped></style>

@@ -1,4 +1,8 @@
-<script setup></script>
+<script setup>
+const props = defineProps({
+  notCompletedCount: { type: Number, required: true },
+});
+</script>
 <template>
   <div
     class="border-t border-gray-200 bg-gray-50 px-4 py-3 sm:px-5"
@@ -13,7 +17,7 @@
           class="font-medium"
           aria-live="polite"
           aria-atomic="true"
-          >2</span
+          >{{ notCompletedCount }}</span
         >
         items left
       </p>
