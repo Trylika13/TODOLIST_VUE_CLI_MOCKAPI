@@ -26,6 +26,14 @@ const createItem = async (content) => {
   // 2. Ajouter cette todo dans todos
   todos.push(todo);
 };
+
+const deleteOneById = async (id) => {
+  DB.deleteOneById(id);
+  todos.splice(
+    todos.findIndex((todo) => todo.id === id),
+    1
+  );
+};
 </script>
 <template>
   <!-- CARD LISTE -->
@@ -41,7 +49,12 @@ const createItem = async (content) => {
     <!-- LISTE DES TODOS -->
     <ul class="m-4 divide-y text-gray-600" role="list" aria-label="Todos">
       <!-- ITEM (exemple) -->
-      <todo v-for="todo in todos" :key="todo.id" :todo="todo" />
+      <todo
+        v-for="todo in todos"
+        :key="todo.id"
+        :todo="todo"
+        @on-delete="deleteOneById($event)"
+      />
     </ul>
 
     <!-- FOOTER DE LISTE -->

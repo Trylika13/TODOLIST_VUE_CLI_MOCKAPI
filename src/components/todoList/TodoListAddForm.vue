@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-const emits = defineEmits("onSubmitAddForm");
+const emits = defineEmits(["onSubmitAddForm"]);
 
 const newContent = ref("");
 
