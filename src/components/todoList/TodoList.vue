@@ -1,6 +1,7 @@
 <script setup>
-import { reactive, onMounted, computed } from "vue";
-import DB from "@/services/DB";
+import { onMounted } from "vue";
+
+import { todosStore } from "@/stores/todos";
 import TodoListAddForm from "./TodoListAddForm.vue";
 import TodoListFooter from "./TodoListFooter.vue";
 import Todo from "./Todo.vue";
@@ -9,35 +10,11 @@ const props = defineProps({
   apiURL: { type: String, required: true },
 });
 
-const todos = reactive([]);
-
-const notCompletedCount = computed(
-  () => todos.filter((todo) => !todo.completed).length
-);
 onMounted(async () => {
-  DB.setApiURL(props.apiURL);
-  todos.splice(todos.length, 0, ...(await DB.findAll()));
-  console.table(todos);
+  todosStore.init(props.apiURL);
 });
-
-// FUNCTION CRUD
-
-const createItem = async (content) => {
-  // 1. Lancer dans DB.create qui retounre la todo avec son id
-  // On envoie le nouveau content à DB.create qui retourne un todo complet
-  const todo = await DB.create(content);
-  // 2. Ajouter cette todo dans todos
-  todos.push(todo);
-};
-
-const deleteOneById = async (id) => {
-  DB.deleteOneById(id);
-  todos.splice(
-    todos.findIndex((todo) => todo.id === id),
-    1
-  );
-};
 </script>
+
 <template>
   <!-- CARD LISTE -->
   <section
@@ -47,21 +24,25 @@ const deleteOneById = async (id) => {
     <h2 id="todo-heading" class="sr-only">Todo list</h2>
 
     <!-- INPUT PRINCIPAL -->
-    <TodoListAddForm @on-submit-add-form="createItem($event)" />
+    <TodoListAddForm @on-submit-add-form="todosStore.createItem($event)" />
 
     <!-- LISTE DES TODOS -->
-    <ul class="m-4 divide-y text-gray-600" role="list" aria-label="Todos">
+    <ul
+      class="m-4 divide-y divide-slate-200 text-slate-600"
+      role="list"
+      aria-label="Todos"
+    >
       <!-- ITEM (exemple) -->
       <todo
-        v-for="todo in todos"
+        v-for="todo in todosStore.todos"
         :key="todo.id"
         :todo="todo"
-        @on-delete="deleteOneById($event)"
+        @on-delete="todosStore.deleteOneById($event)"
       />
     </ul>
 
     <!-- FOOTER DE LISTE -->
-    <TodoListFooter :notCompletedCount="notCompletedCount" />
+    <TodoListFooter :notCompletedCount="todosStore.notCompletedCount" />
   </section>
 </template>
 <style scoped></style>
